@@ -54,10 +54,11 @@ class JSONData {
 
   _addId(id = '', d = this.data) { // 添加唯一标识
     for (let index = 0; index < d.length; index += 1) {
+      let i = id ? `${id}-${index}` : `${index}`
       const dChild = d[index]
-      dChild.id = `${id}${index}`
+      dChild.id = i
       if (dChild.children) {
-        this._addId(`${id}${index}`, dChild.children)
+        this._addId(i, dChild.children)
       }
     }
   }
@@ -98,7 +99,7 @@ class JSONData {
 
   _getItself(d, data = this.data) {
     let dSelf = data
-    const id = d.id.split('').map(s => parseInt(s, 10))
+    const id = d.id.split('-').map(s => parseInt(s, 10))
     if (id.length > 0) {
       for (let index = 0; index < id.length - 1; index++) {
         const number = id[index]
@@ -121,14 +122,14 @@ class JSONData {
       d.color = parent.color // 继承父节点的color
     }
     inheritColor(d, d.color)
-    d.id = `${parent.id}${parent.children.length}`
+    d.id = `${parent.id}-${parent.children.length}`
     parent.children.push(d)
     this._addId(`${d.id}`, d.children)
   }
 
   _getParent(d, data = this.data) {
     let dParent = data
-    const id = d.id.split('').map(s => parseInt(s, 10))
+    const id = d.id.split('-').map(s => parseInt(s, 10))
     id.pop()
     if (id.length > 0) {
       for (let index = 0; index < id.length - 1; index++) {
